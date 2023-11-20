@@ -18,9 +18,6 @@ class CIFAR10DataModule(L.LightningDataModule):
         )
         self.dims = (1, 32, 32)
         self.num_classes = 10
-        self.full_train_set = CIFAR10(self.data_dir, train=True, transform=self.transform)
-        self.train_size = int(0.8 * len(self.full_train_set))
-
 
     def prepare_data(self):
         #скачивание данных
@@ -30,10 +27,10 @@ class CIFAR10DataModule(L.LightningDataModule):
     def setup(self, stage=None):
         #разделение на train/val для использования даталоэдером
         if stage == "fit" or stage is None:
-            #full_train_set = CIFAR10(self.data_dir, train=True, transform=self.transform)
-            train_size = int(0.8 * len(self.full_train_set))
-            val_size = len(self.full_train_set) - train_size
-            self.trainset, self.valset = random_split(self.full_train_set, [train_size, val_size])
+            full_train_set = CIFAR10(self.data_dir, train=True, transform=self.transform)
+            #train_size = int(0.8 * len(full_train_set))
+            #val_size = len(full_train_set) - train_size
+            self.trainset, self.valset = random_split(full_train_set, [40000, 10000])
 
         #тестовый датасет для использования даталоэдером
         if stage == "test" or stage is None:

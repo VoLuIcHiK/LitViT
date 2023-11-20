@@ -18,6 +18,7 @@ class CIFAR10DataModule(L.LightningDataModule):
         )
         self.dims = (1, 32, 32)
         self.num_classes = 10
+        self.trainset = None
 
     def prepare_data(self):
         #скачивание данных

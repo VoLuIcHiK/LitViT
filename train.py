@@ -2,7 +2,7 @@ from .data import CIFAR10DataModule
 from .nn import LitViT
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
-from lightning.pytorch.callbacks import ModelCheckpoint
+from lightning.pytorch.callbacks import ModelCheckpoint, EarlyStopping
 
 LEARNING_RATE = 0.0001
 BATCH_SIZE = 64
@@ -24,7 +24,8 @@ def train(path, epochs):
                    batch_size=BATCH_SIZE,
                    epochs=epochs)
     callbacks = [ModelCheckpoint(dirpath="./checkpoints",
-                                 every_n_train_steps=1)]
+                                 every_n_train_steps=1),
+                 EarlyStopping(monitor='val_loss')]
     wandb_logger = WandbLogger(project="cifar10-vit",
                                config=config)
     trainer = L.Trainer(

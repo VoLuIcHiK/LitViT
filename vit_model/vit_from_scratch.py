@@ -47,8 +47,8 @@ class PatchEmbedding(nn.Module):
         #добавить эмбеддинг класса
         cls_tokens = self.cls_token.expand(b, -1, -1)
         patch_embeddings = torch.cat((cls_tokens, patches), dim=1)
-        print('patch_embeddings: ', patch_embeddings.size())
-        print('pos_embeddings: ', self.pos_embeddings.size())
+        #print('patch_embeddings: ', patch_embeddings.size())
+        #print('pos_embeddings: ', self.pos_embeddings.size())
         #Объединение с positional embeddings
         combined_embeddings = patch_embeddings + self.pos_embeddings
         return combined_embeddings

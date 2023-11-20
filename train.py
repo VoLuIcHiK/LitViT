@@ -17,7 +17,7 @@ def train(path, epochs):
     )
     dm = CIFAR10DataModule()
     model = LitViT(num_classes=dm.num_classes,
-                    len_train=len(dm.trainset),
+                    len_train=len(dm.train_size),
                     batch_size=BATCH_SIZE,
                     epochs=epochs)
     callbacks = [ModelCheckpoint(dirpath="./checkpoints",

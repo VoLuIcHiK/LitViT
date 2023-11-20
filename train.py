@@ -3,6 +3,7 @@ from .nn import LitViT
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.callbacks import ModelCheckpoint, EarlyStopping
+import torch
 
 LEARNING_RATE = 0.0001
 BATCH_SIZE = 64
@@ -37,3 +38,4 @@ def train(path, epochs):
         callbacks=callbacks
     )
     trainer.fit(model, dm)
+    torch.save(model.state_dict(), './our_vit')

@@ -10,6 +10,7 @@ from vit_model.vit_from_scratch import ViT
 class LitViT(L.LightningModule):
     def __init__(self, img_size, num_classes, patch_size, in_chans, len_train, batch_size, epochs, lr=1e-3):
         super().__init__()
+        self.save_hyperparameters()
         self.model = ViT(img_size=img_size,
                          patch_size=patch_size,
                          in_chans=in_chans,

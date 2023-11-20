@@ -26,9 +26,8 @@ from torch.optim.lr_scheduler import ExponentialLR, OneCycleLR
 class PatchEmbedding(nn.Module):
     """ Image to Patch Embedding
     """
-    def __init__(self, img_size=224, batch_size=4, patch_size=16, in_chans=3, embed_dim=768):
+    def __init__(self, img_size=224, patch_size=16, in_chans=3, embed_dim=768):
         super().__init__()
-        self.batch_size = batch_size
         # нарезаем исходное изображение на кусочки размером 16 на 16 с помощью свертки
         self.patch_embeddings = nn.Conv2d(in_channels=in_chans,
                                      out_channels=embed_dim,
@@ -44,8 +43,9 @@ class PatchEmbedding(nn.Module):
         #для flatten указываем позицию (индекс числа), после которой должно сливаться
         #(1, 768, 14, 14) -> (1, 768, 196)
         patches = self.patch_embeddings(image).flatten(start_dim=2).transpose(1, 2)
+        b, n, _ = patches.size()
         #добавить эмбеддинг класса
-        cls_tokens = self.cls_token.expand(self.batch_size, -1, -1)
+        cls_tokens = self.cls_token.expand(b, -1, -1)
         patch_embeddings = torch.cat((cls_tokens, patches), dim=1)
         #Объединение с positional embeddings
         combined_embeddings = patch_embeddings + self.pos_embeddings
@@ -148,13 +148,12 @@ from torch.nn.modules.normalization import LayerNorm
 class ViT(nn.Module):
     """ Vision Transformer with support for patch or hybrid CNN input stage
     """
-    def __init__(self, img_size=224, batch_size=4, patch_size=16, in_chans=3, num_classes=1000,
+    def __init__(self, img_size=224, patch_size=16, in_chans=3, num_classes=1000,
                  depth=12, num_heads=12, mlp_ratio=4.,
                  qkv_bias=False, drop_rate=0.):
         super().__init__()
         # Присвоение переменных
         self.img_size = img_size
-        self.batch_size = batch_size
         self.patch_size = patch_size
         self.in_chans = in_chans
         self.num_classes = num_classes
@@ -165,7 +164,6 @@ class ViT(nn.Module):
         self.drop_rate = drop_rate
         # Path Embeddings, CLS Token, Position Encoding
         self.patch_embeddings = PatchEmbedding(img_size=self.img_size,
-                                               batch_size=self.batch_size,
                                                patch_size=self.patch_size,
                                                in_chans=self.in_chans,
                                                embed_dim=self.embed_dim)

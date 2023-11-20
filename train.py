@@ -16,10 +16,13 @@ def train(path, epochs):
         architecture="ViT"
     )
     dm = CIFAR10DataModule()
-    model = LitViT(num_classes=dm.num_classes,
-                    len_train=40000,
-                    batch_size=BATCH_SIZE,
-                    epochs=epochs)
+    model = LitViT(img_size=32,
+                   patch_size=4,
+                   in_chans=3,
+                   num_classes=dm.num_classes,
+                   len_train=40000,
+                   batch_size=BATCH_SIZE,
+                   epochs=epochs)
     callbacks = [ModelCheckpoint(dirpath="./checkpoints",
                                  every_n_train_steps=1)]
     wandb_logger = WandbLogger(project="cifar10-vit",
